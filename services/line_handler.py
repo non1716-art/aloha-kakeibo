@@ -1,4 +1,4 @@
-cat > services/ocr_handler.py << 'EOF'
+
 import logging
 import os
 import re
