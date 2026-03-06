@@ -5,4 +5,3 @@ google-cloud-vision==3.8.1
 gspread==6.1.4
 google-auth==2.38.0
 requests==2.32.3
-EOFcat requirements.txt
