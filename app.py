@@ -1,4 +1,4 @@
-cat > app.py << 'EOF'
+
 import os
 import logging
 from flask import Flask, request, abort
