@@ -1,0 +1,809 @@
+<title>月5万円ダッシュボード</title>
+<meta name="description" content="フォーム設計・AI/DXサポート・オンライン秘書の3本柱で月5万円を安定させるための案件管理・売上管理・週次KPI・提案書テンプレートをまとめた自分専用ツール">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#F4F4F1;
+    --surface:#FFFFFF;
+    --surface-alt:#ECEDE7;
+    --ink:#22262C;
+    --ink-soft:#5B6169;
+    --accent:#35415C;
+    --accent-soft:#E1E4EC;
+    --line:#DEDFD9;
+    --good:#3F7A5C;
+    --good-soft:#E4F0EA;
+    --warning:#B8862E;
+    --warning-soft:#F5ECDA;
+    --critical:#B3453D;
+    --critical-soft:#F6E4E2;
+    --shadow: 0 1px 2px rgba(34,38,44,.06), 0 6px 20px -8px rgba(34,38,44,.12);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14161A;
+      --surface:#1C1F24;
+      --surface-alt:#22262C;
+      --ink:#E9EAE6;
+      --ink-soft:#A7ACB3;
+      --accent:#8DA0C9;
+      --accent-soft:#262C3C;
+      --line:#2C3036;
+      --good:#6FAE8C;
+      --good-soft:#1E2A24;
+      --warning:#D9A94F;
+      --warning-soft:#2E2718;
+      --critical:#D9776D;
+      --critical-soft:#2E1E1C;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -10px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14161A;
+    --surface:#1C1F24;
+    --surface-alt:#22262C;
+    --ink:#E9EAE6;
+    --ink-soft:#A7ACB3;
+    --accent:#8DA0C9;
+    --accent-soft:#262C3C;
+    --line:#2C3036;
+    --good:#6FAE8C;
+    --good-soft:#1E2A24;
+    --warning:#D9A94F;
+    --warning-soft:#2E2718;
+    --critical:#D9776D;
+    --critical-soft:#2E1E1C;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -10px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    font-variant-numeric: tabular-nums;
+    line-height:1.6;
+    padding-bottom:64px;
+  }
+  h1,h2,h3{
+    font-family:"Shippori Mincho", "Hiragino Mincho ProN", serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+
+  .shell{ max-width:980px; margin:0 auto; padding:20px 16px 0; }
+
+  .topbar{
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+    flex-wrap:wrap; margin-bottom:16px;
+  }
+  .eyebrow{
+    font-size:11px; letter-spacing:.14em; color:var(--ink-soft); font-weight:700;
+    text-transform:uppercase;
+  }
+  .topbar h1{ font-size:22px; font-weight:800; color:var(--ink); }
+  .today{
+    font-size:12px; color:var(--ink-soft); background:var(--surface);
+    border:1px solid var(--line); padding:5px 10px; border-radius:999px;
+  }
+
+  /* summary bar */
+  .summary{
+    position:sticky; top:0; z-index:5;
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:10px;
+    background:var(--bg); padding:10px 0 14px;
+  }
+  @media (max-width:640px){ .summary{ grid-template-columns:1fr; } }
+  .tile{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; box-shadow:var(--shadow);
+  }
+  .tile .label{ font-size:12px; color:var(--ink-soft); font-weight:500; }
+  .tile .big{ font-size:26px; font-weight:800; font-family:"Shippori Mincho",serif; margin-top:2px; }
+  .tile .sub{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .bar{
+    height:8px; border-radius:999px; background:var(--surface-alt); overflow:hidden; margin-top:10px;
+  }
+  .bar > span{ display:block; height:100%; background:var(--accent); border-radius:999px; transition:width .4s ease; }
+  .goal-row{ display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .goal-row input{ width:90px; }
+
+  /* tabs */
+  .tabs{
+    display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; margin-bottom:16px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{
+    flex:0 0 auto; padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink-soft); font-size:13px; font-weight:700;
+    cursor:pointer; white-space:nowrap;
+  }
+  .tab[aria-selected="true"]{ background:var(--accent); border-color:var(--accent); color:var(--surface); }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    padding:18px; box-shadow:var(--shadow); margin-bottom:16px;
+  }
+  .card h2{ font-size:17px; font-weight:800; margin-bottom:4px; }
+  .card .desc{ font-size:12.5px; color:var(--ink-soft); margin-bottom:14px; }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+
+  label{ display:block; font-size:12px; color:var(--ink-soft); font-weight:500; margin-bottom:4px; }
+  input, select, textarea{
+    width:100%; background:var(--surface-alt); border:1px solid var(--line); color:var(--ink);
+    border-radius:9px; padding:8px 10px; font-size:14px; font-family:inherit;
+  }
+  textarea{ resize:vertical; min-height:120px; line-height:1.7; }
+  .field{ margin-bottom:10px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--accent);
+    background:var(--accent); color:var(--surface); font-weight:700; font-size:13.5px;
+    padding:9px 16px; border-radius:9px; cursor:pointer;
+  }
+  .btn.secondary{ background:transparent; color:var(--accent); }
+  .btn.ghost{ background:transparent; border-color:var(--line); color:var(--ink-soft); }
+  .btn.danger{ background:transparent; border-color:var(--critical); color:var(--critical); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th{ text-align:left; font-size:11.5px; color:var(--ink-soft); font-weight:700; padding:8px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  td{ padding:9px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tr:last-child td{ border-bottom:none; }
+  .table-wrap{ overflow-x:auto; }
+
+  .pill{
+    display:inline-block; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:700;
+    background:var(--surface-alt); color:var(--ink-soft); white-space:nowrap;
+  }
+  .pill.stage-問い合わせ{ background:var(--surface-alt); color:var(--ink-soft); }
+  .pill.stage-ヒアリング済{ background:var(--accent-soft); color:var(--accent); }
+  .pill.stage-提案中{ background:var(--warning-soft); color:var(--warning); }
+  .pill.stage-成約{ background:var(--good-soft); color:var(--good); }
+  .pill.stage-継続中{ background:var(--good-soft); color:var(--good); }
+  .pill.stage-見送り{ background:var(--critical-soft); color:var(--critical); }
+  .pill.sample{ background:var(--warning-soft); color:var(--warning); margin-left:6px; }
+
+  .funnel{ display:flex; gap:8px; flex-wrap:wrap; }
+  .funnel .step{
+    flex:1 1 100px; background:var(--surface-alt); border-radius:12px; padding:10px 12px; text-align:center;
+  }
+  .funnel .step .n{ font-size:20px; font-weight:800; font-family:"Shippori Mincho",serif; }
+  .funnel .step .l{ font-size:11px; color:var(--ink-soft); margin-top:2px; }
+
+  .todo-item{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .todo-item:last-child{ border-bottom:none; }
+  .todo-item input[type=checkbox]{ width:18px; height:18px; margin-top:2px; accent-color:var(--accent); }
+  .todo-item.done .task-label{ text-decoration:line-through; color:var(--ink-soft); }
+  .week-head{
+    font-size:12px; font-weight:700; color:var(--accent); margin:16px 0 4px;
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .week-head:first-child{ margin-top:0; }
+
+  .row-actions{ display:flex; gap:6px; }
+  .icon-btn{
+    background:transparent; border:1px solid var(--line); color:var(--ink-soft);
+    border-radius:7px; padding:4px 8px; font-size:12px; cursor:pointer;
+  }
+
+  .empty{ color:var(--ink-soft); font-size:13px; padding:18px 0; text-align:center; }
+  .status-note{ font-size:11.5px; color:var(--ink-soft); margin-top:6px; }
+  .copy-box{ position:relative; }
+  .copy-box .btn{ position:absolute; top:10px; right:10px; padding:6px 12px; font-size:12px; }
+
+  .kpi-target{ font-size:11.5px; color:var(--ink-soft); }
+  select[multiple]{ height:auto; }
+</style>
+
+<div class="shell">
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">Freelance Ops</div>
+      <h1>月5万円ダッシュボード</h1>
+    </div>
+    <div class="today" id="todayLabel"></div>
+  </div>
+
+  <div class="summary">
+    <div class="tile">
+      <div class="label">今月の売上（目標 <span id="goalDisplay">¥50,000</span>）</div>
+      <div class="big" id="monthTotalDisplay">¥0</div>
+      <div class="bar"><span id="goalBar" style="width:0%"></span></div>
+      <div class="sub" id="goalSub">読み込み中…</div>
+    </div>
+    <div class="tile">
+      <div class="label">今週の声かけ数（目安 5〜8件）</div>
+      <div class="big" id="weekOutreachDisplay">—</div>
+      <div class="sub" id="weekOutreachSub">週次KPIタブで記録</div>
+    </div>
+    <div class="tile">
+      <div class="label">進行中の案件</div>
+      <div class="big" id="activeDealsDisplay">—</div>
+      <div class="sub" id="activeDealsSub">問い合わせ〜提案中</div>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-tab="home" aria-selected="true">ダッシュボード</button>
+    <button class="tab" role="tab" data-tab="deals" aria-selected="false">案件・顧客管理</button>
+    <button class="tab" role="tab" data-tab="sales" aria-selected="false">売上記録</button>
+    <button class="tab" role="tab" data-tab="kpi" aria-selected="false">週次KPI</button>
+    <button class="tab" role="tab" data-tab="proposal" aria-selected="false">提案書テンプレート</button>
+    <button class="tab" role="tab" data-tab="tasks" aria-selected="false">30日チェックリスト</button>
+  </div>
+
+  <!-- HOME -->
+  <section class="panel active" id="panel-home">
+    <div class="card">
+      <h2>今、進んでいる案件のステータス</h2>
+      <div class="desc">問い合わせから継続契約まで、どこに何件あるかの一覧です。</div>
+      <div class="funnel" id="funnel"></div>
+    </div>
+    <div class="card">
+      <h2>次にやること（30日チェックリストより）</h2>
+      <div class="desc">未完了のタスクを上から順番に片づければ迷いません。</div>
+      <div id="nextTasks"></div>
+    </div>
+    <div class="card">
+      <h2>サンプルデータについて</h2>
+      <div class="desc">初回表示用に案件・売上のサンプルを1〜2件入れています。実データを入れ始めたら削除してください。</div>
+      <button class="btn ghost" id="clearSampleBtn">サンプルデータをすべて削除</button>
+    </div>
+  </section>
+
+  <!-- DEALS -->
+  <section class="panel" id="panel-deals">
+    <div class="card">
+      <h2>案件を追加</h2>
+      <div class="desc">問い合わせが来たら、まずここに1行追加してください。</div>
+      <div class="grid2">
+        <div class="field"><label>お客様名・屋号</label><input id="dealName" placeholder="例：森田様（ヨガ講師）"></div>
+        <div class="field"><label>サービス</label>
+          <select id="dealService">
+            <option value="A">A：フォーム設計＆自動化パック</option>
+            <option value="B">B：AI・DXミニ診断</option>
+            <option value="C">C：オンライン秘書 月次サポート</option>
+          </select>
+        </div>
+        <div class="field"><label>流入経路</label>
+          <select id="dealSource">
+            <option>紹介</option><option>クラウドソーシング</option><option>Instagram</option><option>その他</option>
+          </select>
+        </div>
+        <div class="field"><label>ステータス</label>
+          <select id="dealStage">
+            <option>問い合わせ</option><option>ヒアリング済</option><option>提案中</option><option>成約</option><option>継続中</option><option>見送り</option>
+          </select>
+        </div>
+        <div class="field"><label>想定金額（円）</label><input id="dealValue" type="number" min="0" step="1000" placeholder="33000"></div>
+        <div class="field"><label>メモ</label><input id="dealMemo" placeholder="任意"></div>
+      </div>
+      <button class="btn" id="addDealBtn">案件を追加</button>
+    </div>
+    <div class="card">
+      <h2>案件一覧</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>お客様</th><th>サービス</th><th>経路</th><th>ステータス</th><th>想定金額</th><th>メモ</th><th></th></tr></thead>
+          <tbody id="dealsBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="dealsEmpty" hidden>まだ案件がありません。上のフォームから追加してください。</div>
+    </div>
+  </section>
+
+  <!-- SALES -->
+  <section class="panel" id="panel-sales">
+    <div class="card">
+      <h2>売上を記録</h2>
+      <div class="desc">入金・成約が決まったタイミングで記録すると、上の月間ゲージに自動反映されます。</div>
+      <div class="grid2">
+        <div class="field"><label>お客様名</label><input id="saleName" placeholder="例：森田様"></div>
+        <div class="field"><label>種別</label>
+          <select id="saleType"><option>単発</option><option>継続</option></select>
+        </div>
+        <div class="field"><label>金額（円）</label><input id="saleAmount" type="number" min="0" step="1000" placeholder="33000"></div>
+        <div class="field"><label>日付</label><input id="saleDate" type="date"></div>
+        <div class="field" style="grid-column:1/-1"><label>メモ</label><input id="saleMemo" placeholder="任意"></div>
+      </div>
+      <button class="btn" id="addSaleBtn">売上を記録</button>
+    </div>
+    <div class="card">
+      <h2>売上履歴</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>日付</th><th>お客様</th><th>種別</th><th>金額</th><th>メモ</th><th></th></tr></thead>
+          <tbody id="salesBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="salesEmpty" hidden>まだ記録がありません。</div>
+    </div>
+  </section>
+
+  <!-- KPI -->
+  <section class="panel" id="panel-kpi">
+    <div class="card">
+      <h2>今週のKPIを記録</h2>
+      <div class="desc">毎週金曜に1分で入力。5つの数字だけ追えば十分です。</div>
+      <div class="grid2">
+        <div class="field"><label>週の開始日（月曜日など）</label><input id="kpiWeek" type="date"></div>
+        <div class="field"><label>新規接触数<span class="kpi-target">（目安5〜8）</span></label><input id="kpiOutreach" type="number" min="0"></div>
+        <div class="field"><label>返信数<span class="kpi-target">（返信率40%目安）</span></label><input id="kpiReplies" type="number" min="0"></div>
+        <div class="field"><label>無料相談・診断実施数<span class="kpi-target">（目安1〜2）</span></label><input id="kpiMeetings" type="number" min="0"></div>
+        <div class="field"><label>成約数<span class="kpi-target">（成約率10〜20%目安）</span></label><input id="kpiContracts" type="number" min="0"></div>
+        <div class="field"><label>メモ・振り返り</label><input id="kpiMemo" placeholder="任意"></div>
+      </div>
+      <button class="btn" id="addKpiBtn">この週を記録</button>
+    </div>
+    <div class="card">
+      <h2>週次履歴</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>週</th><th>声かけ</th><th>返信</th><th>返信率</th><th>相談</th><th>成約</th><th>メモ</th><th></th></tr></thead>
+          <tbody id="kpiBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="kpiEmpty" hidden>まだ記録がありません。まずは今週分から。</div>
+    </div>
+  </section>
+
+  <!-- PROPOSAL -->
+  <section class="panel" id="panel-proposal">
+    <div class="card">
+      <h2>提案文をつくる</h2>
+      <div class="desc">サービスとお客様名を選ぶだけで、コピペ用の提案メッセージができあがります。</div>
+      <div class="grid2">
+        <div class="field"><label>お客様名</label><input id="propName" placeholder="例：田中様"></div>
+        <div class="field"><label>サービス</label>
+          <select id="propService">
+            <option value="A">A：フォーム設計＆自動化パック（¥33,000）</option>
+            <option value="B">B：AI・DXミニ診断（¥11,000）</option>
+            <option value="C">C：オンライン秘書 月次サポート（¥22,000〜／月）</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>お客様の悩み（1〜2行）</label><input id="propPain" placeholder="例：予約の管理が手作業で大変"></div>
+        <div class="field"><label>納期・時間の目安</label><input id="propTiming" placeholder="例：3営業日"></div>
+        <div class="field"><label>申込フォームURL（任意）</label><input id="propUrl" placeholder="TallyフォームのURL"></div>
+      </div>
+      <button class="btn" id="genPropBtn">提案文を作成</button>
+    </div>
+    <div class="card">
+      <h2>コピペ用テキスト</h2>
+      <div class="copy-box">
+        <textarea id="propOutput" readonly placeholder="上のフォームを入力して「提案文を作成」を押してください"></textarea>
+        <button class="btn secondary" id="copyPropBtn">コピー</button>
+      </div>
+      <div class="status-note" id="copyStatus"></div>
+    </div>
+  </section>
+
+  <!-- TASKS -->
+  <section class="panel" id="panel-tasks">
+    <div class="card">
+      <h2>最初の30日チェックリスト</h2>
+      <div class="desc">チェックを入れると自動で保存されます。完璧を目指さず、上から順に。</div>
+      <div id="tasksList"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SERVICES = {
+    A: { label:"A：フォーム設計＆自動化パック", price:33000, priceLabel:"¥33,000", timing:"3営業日", desc:"Tallyでの問い合わせ／予約フォーム設計＋Google連携" },
+    B: { label:"B：AI・DXミニ診断（60分）", price:11000, priceLabel:"¥11,000", timing:"当日中", desc:"60分Zoomヒアリング＋要約レポートとすぐ使えるプロンプト" },
+    C: { label:"C：オンライン秘書 月次サポート", price:22000, priceLabel:"月¥22,000〜", timing:"月初にすり合わせ", desc:"予約管理・問い合わせ対応・データ整理を月4時間相当で代行" }
+  };
+
+  var DEFAULT_TASKS = [
+    {id:"w1-1", week:1, label:"サービスA/B/Cの価格表を確定する"},
+    {id:"w1-2", week:1, label:"Tallyで無料相談・問い合わせフォームを3本作る"},
+    {id:"w1-3", week:1, label:"Before/After比較画像を1枚つくる（ポートフォリオ用）"},
+    {id:"w1-4", week:1, label:"知人・元同僚に個別で10人連絡する"},
+    {id:"w2-1", week:2, label:"クラウドソーシングに2件提案を送る"},
+    {id:"w2-2", week:2, label:"Instagram投稿を開始する（週2本ペース）"},
+    {id:"w2-3", week:2, label:"無料相談（診断B）を3件実施する"},
+    {id:"w3-1", week:3, label:"モニター価格で1件成約を目指す"},
+    {id:"w3-2", week:3, label:"診断Bを受けた人全員にA or Cを1つ提案する"},
+    {id:"w4-1", week:4, label:"成約した方に紹介を1件お願いする"},
+    {id:"w4-2", week:4, label:"実例をポートフォリオに追加する"},
+    {id:"w4-3", week:4, label:"今月の確定売上を集計し、来月のパターンを決める"}
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var yen = function(n){ return "¥" + Math.round(n||0).toLocaleString("ja-JP"); };
+  var todayISO = function(){ return new Date().toISOString().slice(0,10); };
+  var monthKey = function(iso){ return (iso||"").slice(0,7); };
+
+  $("todayLabel").textContent = new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric", weekday:"short" });
+  $("saleDate").value = todayISO();
+
+  // ---------- storage layer: db capability with localStorage fallback ----------
+  var db = null;
+  var LOCAL_KEYS = { deals:"gk_deals", sales:"gk_sales", kpi:"gk_kpi", tasks:"gk_tasks", settings:"gk_settings" };
+
+  function localGet(key, fallback){
+    try{ var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch(e){ return fallback; }
+  }
+  function localSet(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+  }
+
+  var state = { deals:[], sales:[], kpi:[], tasks:{}, settings:{ monthlyGoal:50000 } };
+
+  function renderAll(){
+    renderSummary(); renderFunnel(); renderNextTasks();
+    renderDeals(); renderSales(); renderKpi(); renderTasks();
+  }
+
+  // ---- local (no-db) mode ----
+  function loadLocal(){
+    state.deals = localGet(LOCAL_KEYS.deals, [
+      {id:"sample-1", name:"（サンプル）森田様（ヨガ講師）", service:"A", source:"紹介", stage:"提案中", value:33000, memo:"体験レッスン予約フォームの相談", sample:true},
+      {id:"sample-2", name:"（サンプル）はな占い室 様", service:"C", source:"Instagram", stage:"継続中", value:22000, memo:"月次の予約・問い合わせ対応を代行中", sample:true}
+    ]);
+    state.sales = localGet(LOCAL_KEYS.sales, [
+      {id:"sample-s1", name:"（サンプル）はな占い室 様", type:"継続", amount:22000, date: monthKey(todayISO())+"-05", memo:"月次サポート", sample:true}
+    ]);
+    state.kpi = localGet(LOCAL_KEYS.kpi, []);
+    state.tasks = localGet(LOCAL_KEYS.tasks, {});
+    state.settings = localGet(LOCAL_KEYS.settings, { monthlyGoal:50000 });
+    renderAll();
+  }
+
+  function localAdd(collectionKey, item){
+    item.id = item.id || (Date.now().toString(36) + Math.random().toString(36).slice(2,7));
+    state[collectionKey].push(item);
+    localSet(LOCAL_KEYS[collectionKey], state[collectionKey]);
+    renderAll();
+  }
+  function localRemove(collectionKey, id){
+    state[collectionKey] = state[collectionKey].filter(function(x){ return x.id !== id; });
+    localSet(LOCAL_KEYS[collectionKey], state[collectionKey]);
+    renderAll();
+  }
+  function localUpdate(collectionKey, id, patch){
+    state[collectionKey] = state[collectionKey].map(function(x){ return x.id === id ? Object.assign({}, x, patch) : x; });
+    localSet(LOCAL_KEYS[collectionKey], state[collectionKey]);
+    renderAll();
+  }
+  function localSetTask(id, done, label, week){
+    state.tasks[id] = { done: done, label: label, week: week };
+    localSet(LOCAL_KEYS.tasks, state.tasks);
+    renderAll();
+  }
+  function localSetGoal(v){
+    state.settings.monthlyGoal = v;
+    localSet(LOCAL_KEYS.settings, state.settings);
+    renderAll();
+  }
+
+  // ---- db mode ----
+  function attachDbListeners(){
+    db.collection("deals").onSnapshot(function(snap){
+      state.deals = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderAll();
+    }, function(){ });
+    db.collection("sales").onSnapshot(function(snap){
+      state.sales = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderAll();
+    }, function(){ });
+    db.collection("kpi").onSnapshot(function(snap){
+      state.kpi = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+      renderAll();
+    }, function(){ });
+    db.collection("tasks30").onSnapshot(function(snap){
+      var map = {};
+      snap.docs.forEach(function(d){ map[d.id] = d.data(); });
+      state.tasks = map;
+      renderAll();
+    }, function(){ });
+    db.doc("settings/main").onSnapshot(function(snap){
+      state.settings = snap.exists ? Object.assign({monthlyGoal:50000}, snap.data()) : {monthlyGoal:50000};
+      renderAll();
+    }, function(){ });
+  }
+
+  function dbAdd(collectionName, item){
+    db.collection(collectionName).add(item).catch(function(){});
+  }
+  function dbRemove(collectionName, id){
+    db.collection(collectionName).doc(id).delete().catch(function(){});
+  }
+  function dbUpdate(collectionName, id, patch){
+    db.collection(collectionName).doc(id).update(patch).catch(function(){});
+  }
+  function dbSetTask(id, done, label, week){
+    db.doc("tasks30/" + id).set({ done: done, label: label, week: week }).catch(function(){});
+  }
+  function dbSetGoal(v){
+    db.doc("settings/main").set({ monthlyGoal: v }).catch(function(){});
+  }
+
+  // unified API used by UI handlers
+  var api = {
+    addDeal: function(item){ db ? dbAdd("deals", item) : localAdd("deals", item); },
+    removeDeal: function(id){ db ? dbRemove("deals", id) : localRemove("deals", id); },
+    updateDeal: function(id, patch){ db ? dbUpdate("deals", id, patch) : localUpdate("deals", id, patch); },
+    addSale: function(item){ db ? dbAdd("sales", item) : localAdd("sales", item); },
+    removeSale: function(id){ db ? dbRemove("sales", id) : localRemove("sales", id); },
+    addKpi: function(item){ db ? dbAdd("kpi", item) : localAdd("kpi", item); },
+    removeKpi: function(id){ db ? dbRemove("kpi", id) : localRemove("kpi", id); },
+    setTask: function(id, done, label, week){ db ? dbSetTask(id, done, label, week) : localSetTask(id, done, label, week); },
+    setGoal: function(v){ db ? dbSetGoal(v) : localSetGoal(v); },
+    clearSamples: function(){
+      if(db){
+        ["deals","sales","kpi"].forEach(function(col){
+          db.collection(col).where("sample","==",true).get().then(function(snap){
+            snap.docs.forEach(function(d){ db.collection(col).doc(d.id).delete().catch(function(){}); });
+          }).catch(function(){});
+        });
+      } else {
+        ["deals","sales","kpi"].forEach(function(k){
+          state[k] = state[k].filter(function(x){ return !x.sample; });
+          localSet(LOCAL_KEYS[k], state[k]);
+        });
+        renderAll();
+      }
+    }
+  };
+
+  // ---------- rendering ----------
+  function renderSummary(){
+    var goal = state.settings.monthlyGoal || 50000;
+    $("goalDisplay").textContent = yen(goal);
+    var mk = monthKey(todayISO());
+    var total = state.sales.filter(function(s){ return monthKey(s.date) === mk; })
+      .reduce(function(sum, s){ return sum + (Number(s.amount)||0); }, 0);
+    $("monthTotalDisplay").textContent = yen(total);
+    var pct = Math.min(100, Math.round((total/goal)*100));
+    $("goalBar").style.width = pct + "%";
+    var remain = Math.max(0, goal - total);
+    $("goalSub").textContent = total >= goal
+      ? "目標達成！次は" + yen(Math.round(goal*1.2)) + "を目指しましょう"
+      : "達成まであと " + yen(remain) + "（" + pct + "%）";
+
+    var weeks = state.kpi.slice().sort(function(a,b){ return (b.week||"").localeCompare(a.week||""); });
+    if(weeks.length){
+      $("weekOutreachDisplay").textContent = (weeks[0].outreach||0) + "件";
+      $("weekOutreachSub").textContent = "直近の週（" + weeks[0].week + "）の記録";
+    } else {
+      $("weekOutreachDisplay").textContent = "0件";
+      $("weekOutreachSub").textContent = "週次KPIタブでまず1件入力";
+    }
+
+    var active = state.deals.filter(function(d){ return ["問い合わせ","ヒアリング済","提案中"].indexOf(d.stage) !== -1; }).length;
+    $("activeDealsDisplay").textContent = active + "件";
+    $("activeDealsSub").textContent = "問い合わせ〜提案中の合計";
+  }
+
+  function renderFunnel(){
+    var order = ["問い合わせ","ヒアリング済","提案中","成約","継続中","見送り"];
+    var counts = {}; order.forEach(function(s){ counts[s]=0; });
+    state.deals.forEach(function(d){ if(counts[d.stage]!==undefined) counts[d.stage]++; });
+    $("funnel").innerHTML = order.map(function(s){
+      return '<div class="step"><div class="n">'+counts[s]+'</div><div class="l">'+s+'</div></div>';
+    }).join("");
+  }
+
+  function renderNextTasks(){
+    var pending = DEFAULT_TASKS.filter(function(t){
+      var rec = state.tasks[t.id];
+      return !(rec && rec.done);
+    }).slice(0,3);
+    var el = $("nextTasks");
+    if(!pending.length){ el.innerHTML = '<div class="empty">お疲れさまです、30日分すべて完了しています。</div>'; return; }
+    el.innerHTML = pending.map(function(t){
+      return '<div class="todo-item"><input type="checkbox" data-quick-task="'+t.id+'"><div><div class="task-label">'+t.label+'</div><div class="kpi-target">Week '+t.week+'</div></div></div>';
+    }).join("");
+    Array.prototype.forEach.call(el.querySelectorAll("[data-quick-task]"), function(cb){
+      cb.addEventListener("change", function(){
+        var t = DEFAULT_TASKS.find(function(x){ return x.id === cb.getAttribute("data-quick-task"); });
+        api.setTask(t.id, cb.checked, t.label, t.week);
+      });
+    });
+  }
+
+  function renderDeals(){
+    var body = $("dealsBody");
+    if(!state.deals.length){ body.innerHTML=""; $("dealsEmpty").hidden=false; return; }
+    $("dealsEmpty").hidden = true;
+    body.innerHTML = state.deals.slice().sort(function(a,b){ return (b.id||"").localeCompare(a.id||""); }).map(function(d){
+      var stages = ["問い合わせ","ヒアリング済","提案中","成約","継続中","見送り"];
+      var opts = stages.map(function(s){ return '<option '+(s===d.stage?"selected":"")+'>'+s+'</option>'; }).join("");
+      return '<tr>'+
+        '<td>'+escapeHtml(d.name||"")+(d.sample?'<span class="pill sample">サンプル</span>':'')+'</td>'+
+        '<td>'+(SERVICES[d.service]?SERVICES[d.service].label.slice(0,1):"-")+'</td>'+
+        '<td>'+escapeHtml(d.source||"")+'</td>'+
+        '<td><select data-deal-stage="'+d.id+'" class="pill stage-'+d.stage+'">'+opts+'</select></td>'+
+        '<td>'+yen(d.value)+'</td>'+
+        '<td>'+escapeHtml(d.memo||"")+'</td>'+
+        '<td><button class="icon-btn" data-del-deal="'+d.id+'">削除</button></td>'+
+        '</tr>';
+    }).join("");
+    Array.prototype.forEach.call(body.querySelectorAll("[data-deal-stage]"), function(sel){
+      sel.addEventListener("change", function(){
+        api.updateDeal(sel.getAttribute("data-deal-stage"), { stage: sel.value });
+      });
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-del-deal]"), function(btn){
+      btn.addEventListener("click", function(){ api.removeDeal(btn.getAttribute("data-del-deal")); });
+    });
+  }
+
+  function renderSales(){
+    var body = $("salesBody");
+    if(!state.sales.length){ body.innerHTML=""; $("salesEmpty").hidden=false; return; }
+    $("salesEmpty").hidden = true;
+    body.innerHTML = state.sales.slice().sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); }).map(function(s){
+      return '<tr>'+
+        '<td>'+escapeHtml(s.date||"")+'</td>'+
+        '<td>'+escapeHtml(s.name||"")+(s.sample?'<span class="pill sample">サンプル</span>':'')+'</td>'+
+        '<td><span class="pill">'+escapeHtml(s.type||"")+'</span></td>'+
+        '<td>'+yen(s.amount)+'</td>'+
+        '<td>'+escapeHtml(s.memo||"")+'</td>'+
+        '<td><button class="icon-btn" data-del-sale="'+s.id+'">削除</button></td>'+
+        '</tr>';
+    }).join("");
+    Array.prototype.forEach.call(body.querySelectorAll("[data-del-sale]"), function(btn){
+      btn.addEventListener("click", function(){ api.removeSale(btn.getAttribute("data-del-sale")); });
+    });
+  }
+
+  function renderKpi(){
+    var body = $("kpiBody");
+    if(!state.kpi.length){ body.innerHTML=""; $("kpiEmpty").hidden=false; return; }
+    $("kpiEmpty").hidden = true;
+    body.innerHTML = state.kpi.slice().sort(function(a,b){ return (b.week||"").localeCompare(a.week||""); }).map(function(k){
+      var rate = k.outreach ? Math.round((k.replies/k.outreach)*100) : 0;
+      return '<tr>'+
+        '<td>'+escapeHtml(k.week||"")+'</td>'+
+        '<td>'+(k.outreach||0)+'</td>'+
+        '<td>'+(k.replies||0)+'</td>'+
+        '<td>'+rate+'%</td>'+
+        '<td>'+(k.meetings||0)+'</td>'+
+        '<td>'+(k.contracts||0)+'</td>'+
+        '<td>'+escapeHtml(k.memo||"")+'</td>'+
+        '<td><button class="icon-btn" data-del-kpi="'+k.id+'">削除</button></td>'+
+        '</tr>';
+    }).join("");
+    Array.prototype.forEach.call(body.querySelectorAll("[data-del-kpi]"), function(btn){
+      btn.addEventListener("click", function(){ api.removeKpi(btn.getAttribute("data-del-kpi")); });
+    });
+  }
+
+  function renderTasks(){
+    var el = $("tasksList");
+    var weeks = [1,2,3,4];
+    el.innerHTML = weeks.map(function(w){
+      var items = DEFAULT_TASKS.filter(function(t){ return t.week === w; }).map(function(t){
+        var rec = state.tasks[t.id];
+        var done = rec && rec.done;
+        return '<div class="todo-item '+(done?"done":"")+'">'+
+          '<input type="checkbox" data-task="'+t.id+'" '+(done?"checked":"")+'>'+
+          '<div class="task-label">'+t.label+'</div></div>';
+      }).join("");
+      return '<div class="week-head">Week '+w+'</div>' + items;
+    }).join("");
+    Array.prototype.forEach.call(el.querySelectorAll("[data-task]"), function(cb){
+      cb.addEventListener("change", function(){
+        var t = DEFAULT_TASKS.find(function(x){ return x.id === cb.getAttribute("data-task"); });
+        api.setTask(t.id, cb.checked, t.label, t.week);
+      });
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  // ---------- tabs ----------
+  $("tabs").addEventListener("click", function(e){
+    var btn = e.target.closest(".tab");
+    if(!btn) return;
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){ t.setAttribute("aria-selected", String(t===btn)); });
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function(p){ p.classList.remove("active"); });
+    $("panel-" + btn.getAttribute("data-tab")).classList.add("active");
+  });
+
+  // ---------- form handlers ----------
+  $("addDealBtn").addEventListener("click", function(){
+    var name = $("dealName").value.trim();
+    if(!name){ $("dealName").focus(); return; }
+    api.addDeal({
+      name: name, service: $("dealService").value, source: $("dealSource").value,
+      stage: $("dealStage").value, value: Number($("dealValue").value)||0, memo: $("dealMemo").value.trim(),
+      sample:false
+    });
+    ["dealName","dealValue","dealMemo"].forEach(function(id){ $(id).value=""; });
+  });
+
+  $("addSaleBtn").addEventListener("click", function(){
+    var name = $("saleName").value.trim();
+    var amount = Number($("saleAmount").value)||0;
+    if(!name || !amount){ (name? $("saleAmount") : $("saleName")).focus(); return; }
+    api.addSale({
+      name:name, type:$("saleType").value, amount:amount,
+      date:$("saleDate").value || todayISO(), memo:$("saleMemo").value.trim(), sample:false
+    });
+    ["saleName","saleAmount","saleMemo"].forEach(function(id){ $(id).value=""; });
+    $("saleDate").value = todayISO();
+  });
+
+  $("addKpiBtn").addEventListener("click", function(){
+    var week = $("kpiWeek").value;
+    if(!week){ $("kpiWeek").focus(); return; }
+    api.addKpi({
+      week:week, outreach:Number($("kpiOutreach").value)||0, replies:Number($("kpiReplies").value)||0,
+      meetings:Number($("kpiMeetings").value)||0, contracts:Number($("kpiContracts").value)||0,
+      memo:$("kpiMemo").value.trim(), sample:false
+    });
+    ["kpiOutreach","kpiReplies","kpiMeetings","kpiContracts","kpiMemo"].forEach(function(id){ $(id).value=""; });
+    $("kpiWeek").value = "";
+  });
+
+  $("clearSampleBtn").addEventListener("click", api.clearSamples);
+
+  $("genPropBtn").addEventListener("click", function(){
+    var name = $("propName").value.trim() || "〇〇";
+    var svc = SERVICES[$("propService").value];
+    var pain = $("propPain").value.trim() || "△△（お伺いした内容）";
+    var timing = $("propTiming").value.trim() || svc.timing;
+    var url = $("propUrl").value.trim();
+    var text = name + "様\n\n" +
+      "本日はお時間いただきありがとうございました。\n" +
+      "お話を伺って、まずは「" + pain + "」を解決するために\n" +
+      svc.label + "が合うと感じました。\n\n" +
+      "内容：" + svc.desc + "\n" +
+      "価格：" + svc.priceLabel + "（税込）\n" +
+      "納期の目安：" + timing + "\n\n" +
+      (url ? ("ご検討いただけましたら、こちらのフォームからお申し込みください。\n" + url + "\n\n") : "") +
+      "何かご不明な点があれば、いつでもご連絡くださいね。";
+    $("propOutput").value = text;
+    $("copyStatus").textContent = "";
+  });
+
+  $("copyPropBtn").addEventListener("click", function(){
+    var text = $("propOutput").value;
+    if(!text){ $("copyStatus").textContent = "先に提案文を作成してください。"; return; }
+    navigator.clipboard && navigator.clipboard.writeText(text).then(function(){
+      $("copyStatus").textContent = "コピーしました。";
+    }).catch(function(){
+      $("propOutput").select();
+      $("copyStatus").textContent = "自動コピーできませんでした。テキストを選択済みなので Ctrl+C / Cmd+C でコピーしてください。";
+    });
+  });
+
+  // ---------- init ----------
+  loadLocal(); // render immediately with local/sample data so the page is never empty
+
+  if(window.claude && typeof window.claude.use === "function"){
+    window.claude.use("db").then(function(namespace){
+      if(!namespace) return; // stay in local mode
+      db = namespace;
+      attachDbListeners();
+    }).catch(function(){ /* stay in local mode */ });
+  }
+})();
+</script>
