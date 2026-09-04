@@ -101,3 +101,14 @@
 - `account-ledger/hearing_sheet.txt`（ヒアリングの聞き方）
 
 新しい資料やツールは作らない。
+
+---
+
+## チラシ（手渡し・置きチラシ・ポスティング共通）
+
+100枚配って反応を見ながら改善する前提のA4チラシ。会話なしで「誰向けか／何をしてくれるか／どんな悩みが解決できるか／どう連絡すればいいか」が一瞬で伝わる構成にしている。
+
+- デザイン：https://claude.ai/code/artifact/b10b91d8-5a93-42f9-92c1-cd41e2c154df（`business-plan/flyer/`に原稿も保存）
+- 屋号・名前：Aloha Spirit Office／Noriko／Form Designer / AI・DX Support（オンライン秘書は今回のチラシでは出していない）
+- 連絡窓口：Instagram `@aloha_spirit129`（QRコード付き）のみ。電話・メールは載せていない
+- 実績表記：ゆき先生・じゅんこさんとも匿名（「ヨガ講師さま」「アーユルヴェーダサロンさま」）。数字は書いていない
